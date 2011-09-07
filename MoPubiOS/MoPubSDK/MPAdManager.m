@@ -180,6 +180,7 @@ NSString * const kAdTypeClear = @"clear";
 	[_autorefreshTimer invalidate];
 	[_autorefreshTimer release];
 	[_timerTarget release];
+    [_request release];
 	
 	_adView = nil;
     [super dealloc];
