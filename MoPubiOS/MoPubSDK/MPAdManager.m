@@ -124,6 +124,8 @@ NSString * const kAdTypeClear = @"clear";
 		_ignoresAutorefresh = adView.ignoresAutorefresh;
 		_store = [MPStore sharedStore];
 		_timerTarget = [[MPTimerTarget alloc] initWithNotificationName:kTimerNotificationName];
+        _request = [[NSMutableURLRequest alloc] init];
+        [_request setValue:MPUserAgentString() forHTTPHeaderField:@"User-Agent"];			
 		[[NSNotificationCenter defaultCenter] addObserver:self
 												 selector:@selector(forceRefreshAd)
 													 name:kTimerNotificationName
@@ -317,7 +319,7 @@ NSString * const kAdTypeClear = @"clear";
 
 - (void)trackClick
 {
-	NSURLRequest *clickURLRequest = [NSURLRequest requestWithURL:self.clickURL];
+	//NSMutableURLRequest *clickURLRequest = [NSMutableURLRequest requestWithURL:self.clickURL];
     [clickURLRequest setValue:MPUserAgentString() forHTTPHeaderField:@"User-Agent"];
 	[NSURLConnection connectionWithRequest:clickURLRequest delegate:nil];
 	MPLogDebug(@"Ad view (%p) tracking click %@", self, self.clickURL);
@@ -325,7 +327,7 @@ NSString * const kAdTypeClear = @"clear";
 
 - (void)trackImpression
 {
-	NSURLRequest *impTrackerURLRequest = [NSURLRequest requestWithURL:self.impTrackerURL];
+	NSMutableURLRequest *impTrackerURLRequest = [NSMutableURLRequest requestWithURL:self.impTrackerURL];
     [impTrackerURLRequest setValue:MPUserAgentString() forKey:@"User-Agent"];
 	[NSURLConnection connectionWithRequest:impTrackerURLRequest delegate:nil];
 	MPLogDebug(@"Ad view (%p) tracking impression %@", self, self.impTrackerURL);
