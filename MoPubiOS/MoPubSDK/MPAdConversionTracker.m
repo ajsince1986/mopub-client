@@ -56,6 +56,7 @@
 									  ];
 		MPLogInfo(@"Reporting application did launch for the first time to MoPub: %@", appOpenUrlString);
 		NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:appOpenUrlString]];
+        [request setValue:MPUserAgentString() forHTTPHeaderField:@"User-Agent"];
 		NSURLResponse *response;
 		NSError *error = nil;
 		NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
