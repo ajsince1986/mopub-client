@@ -176,6 +176,10 @@ typedef enum
  */
 - (void)customEventDidFailToLoadAd;
 
+- (void)customEventActionWillBegin;
+
+- (void)customEventActionDidEnd;
+
 /*
  * Forces native ad networks to only use ads sized for the specified orientation. For instance, 
  * if you call this with UIInterfaceOrientationPortrait, native networks (e.g. iAd) will never 
