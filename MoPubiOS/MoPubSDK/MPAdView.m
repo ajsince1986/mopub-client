@@ -202,6 +202,7 @@ static NSString * const kAdAnimationId = @"MPAdTransition";
 	// look strange (e.g. CurlUp / CurlDown). We'll just omit the transition.
 	if (!_adContentView) type = MPAdAnimationTypeNone;
     if (type == MPAdAnimationTypeNone) {
+        _adContentView = view;
         [self addSubview:view];
         [self animationDidStop:kAdAnimationId finished:[NSNumber numberWithBool:YES] context:view];
         return;
@@ -215,6 +216,8 @@ static NSString * const kAdAnimationId = @"MPAdTransition";
     [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
     [UIView setAnimationDuration:1.0];
     
+    _adContentView = view;
+  
     switch (type)
     {
         case MPAdAnimationTypeFlipFromLeft:
@@ -255,20 +258,21 @@ static NSString * const kAdAnimationId = @"MPAdTransition";
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished 
 				 context:(void *)context
 {
+  UIView *oldContentView = [self viewWithTag:100];
 	if ([animationID isEqualToString:kAdAnimationId])
 	{
 		UIView *viewAddedToHierarchy = (UIView *)context;
 		
 		// Remove the old ad content view from the view hierarchy, but first confirm that it's
 		// not the same as the new view; otherwise, we'll be left with no content view.
-		if (_adContentView != viewAddedToHierarchy)
+		if (oldContentView != viewAddedToHierarchy)
 		{
-			[_adContentView removeFromSuperview];
+			[oldContentView removeFromSuperview];
 			
 			// Additionally, do webview-related cleanup if the old _adContentView was a webview.
-			if ([_adContentView isKindOfClass:[UIWebView class]])
+			if ([oldContentView isKindOfClass:[UIWebView class]])
 			{
-				UIWebView *webView = (UIWebView *)_adContentView;
+				UIWebView *webView = (UIWebView *)oldContentView;
 				[webView setDelegate:nil];
 				[webView stopLoading];
 				[_adManager removeWebviewFromPool:webView];
@@ -276,9 +280,9 @@ static NSString * const kAdAnimationId = @"MPAdTransition";
 		}
 		
 		// Release _adContentView, since -setAdContentView: retained it.
-		[_adContentView release];
+		[oldContentView release];
 		
-		_adContentView = viewAddedToHierarchy;
+    _adContentView.tag = 100;
 	}
 }
 
